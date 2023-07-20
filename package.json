@@ -19,7 +19,6 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
-    "chokidar": "^3.5.3",
     "debug": "^4.3.4",
     "express": "^4.18.2",
     "socket.io": "^4.7.1"
