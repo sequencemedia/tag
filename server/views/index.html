@@ -2,11 +2,13 @@
 <html>
   <head></head>
   <body>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    var socket = io();
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
 
-    console.log(socket)
-  </script>
+      socket
+        .on('insert', (data) => console.log('insert', data))
+        .on('update', (data) => console.log('update', data))
+    </script>
   </body>
 </html>

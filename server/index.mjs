@@ -201,16 +201,18 @@ server.listen(PORT, async () => {
             fullDocument
           } = data
 
-          io.emit(operationType, { id, document: fullDocument })
+          io.emit(operationType, { _id: id, document: fullDocument })
           break
         }
 
         case 'update': {
           const {
-            updatedFields
+            updateDescription: {
+              updatedFields
+            }
           } = data
 
-          io.emit(operationType, { id, fields: updatedFields })
+          io.emit(operationType, { _id: id, fields: updatedFields })
           break
         }
       }
