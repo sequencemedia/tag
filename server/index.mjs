@@ -164,6 +164,8 @@ process
 
 log(process.pid)
 
+app.use('/assets', express.static('./public'))
+
 app.get('/', (req, res) => {
   res.sendFile('server/views/index.html', { root: '.' })
 })
