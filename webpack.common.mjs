@@ -25,7 +25,7 @@ export default function common (env, { mode = NODE_ENV } = {}) {
     mode,
     entry: {
       app: {
-        import: path.join(CLIENT_PATH, 'app.mjs'),
+        import: path.join(CLIENT_PATH, 'app.jsx'),
         dependOn: 'vendors'
       },
       vendors: [
@@ -47,7 +47,7 @@ export default function common (env, { mode = NODE_ENV } = {}) {
     module: {
       rules: [
         {
-          test: /\.mjs$|\.cjs$|\.jsx$/,
+          test: /\.mjs$|\.cjs$|\.mts$|\.cts$|\.jsx$|\.tsx$/,
           use: {
             loader: 'babel-loader'
           },

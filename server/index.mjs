@@ -39,7 +39,11 @@ const warn = debug('@sequencemedia/tag:warn')
 const error = debug('@sequencemedia/tag:error')
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+  transports: [
+    'websocket'
+  ]
+})
 
 const tifModel = getTifModel()
 
@@ -164,6 +168,7 @@ process
 
 log(process.pid)
 
+app.use('/favicon.ico', express.static('./public/favicon.ico'))
 app.use('/assets', express.static('./public'))
 
 app.get('/', (req, res) => {

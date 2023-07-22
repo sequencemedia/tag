@@ -22,7 +22,7 @@
     "build:dev:css": "cross-env NODE_ENV=development echo DEV CSS",
     "start": "cross-env NODE_ENV=production DEBUG=@sequencemedia/tag* node --no-warnings .",
     "start:dev": "cross-env NODE_ENV=development DEBUG=@sequencemedia/tag* node .",
-    "lint": "eslint . --ext .mjs,.cjs,.mts,.cts",
+    "lint": "eslint . --ext .mjs,.cjs,.mts,.cts,.jsx,.tsx",
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
@@ -33,18 +33,21 @@
     "nconf": "^0.12.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "socket.io": "^4.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
     "@babel/eslint-parser": "^7.22.9",
     "@babel/preset-env": "^7.22.9",
+    "@babel/preset-react": "^7.22.5",
     "@sequencemedia/hooks": "^1.0.443",
     "babel-loader": "^9.1.3",
     "clean-webpack-plugin": "^4.0.0",
     "concurrently": "^8.2.0",
     "eslint": "^8.45.0",
     "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-react": "^7.33.0",
     "terser-webpack-plugin": "^5.3.9",
     "uglify-js": "^3.17.4",
     "webpack": "^5.88.2",

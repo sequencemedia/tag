@@ -2,16 +2,10 @@
 <html>
   <head></head>
   <body>
+    <div id="app"><!-- app --></div>
     <script src="/socket.io/socket.io.js"></script>
     <script async src="/assets/js/runtime.js"></script>
     <script async src="/assets/js/vendors.js"></script>
     <script async src="/assets/js/app.js"></script>
-    <script>
-      var socket = io();
-
-      socket
-        .on('insert', (data) => console.log('insert', data))
-        .on('update', (data) => console.log('update', data))
-    </script>
   </body>
 </html>
