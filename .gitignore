@@ -12,5 +12,7 @@
 # Deps
 .depsrc
 
-# Development
-.files
+# Cache
+.cache/*.jpg
+.cache/*.png
+.cache/*.tif

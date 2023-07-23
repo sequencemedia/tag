@@ -1,10 +1,17 @@
 import debug from 'debug'
 import mongoose from 'mongoose'
 import express from 'express'
+import Joi from 'joi'
 import http from 'node:http'
 import {
   Server
 } from 'socket.io'
+import {
+  getFileNameMiddleware,
+  getFilePathMiddleware,
+  fileMiddleware,
+  fileTypeMiddleware
+} from '#server/middlewares'
 import getTifModel from '#server/models/tif'
 import getMongoDBUri from '#config/get-mongodb-uri'
 
@@ -33,10 +40,15 @@ async function disconnect () {
   ) await mongoose.disconnect()
 }
 
+function toMessage ({ message }) {
+  return { message }
+}
+
 const log = debug('@sequencemedia/tag')
 const info = debug('@sequencemedia/tag:info')
 const warn = debug('@sequencemedia/tag:warn')
 const error = debug('@sequencemedia/tag:error')
+
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
@@ -45,7 +57,7 @@ const io = new Server(server, {
   ]
 })
 
-const tifModel = getTifModel()
+const ID = /[0-9a-fA-F]{24}/
 
 const DISCONNECTED = 0
 const CONNECTED = 1
@@ -175,6 +187,98 @@ app.get('/', (req, res) => {
   res.sendFile('server/views/index.html', { root: '.' })
 })
 
+{
+  const schema = Joi.object().keys({
+    id: (
+      Joi.string()
+        .min(24)
+        .max(24)
+        .regex(ID)
+        .required()
+    )
+  })
+
+  function validate ({ params }, res, next) {
+    const {
+      error
+    } = schema.validate(params)
+
+    if (error) {
+      const {
+        details
+      } = error
+
+      if (details.length > 1) {
+        res.status(422)
+          .json({ messages: details.map(toMessage) })
+      } else {
+        const [
+          detail
+        ] = details
+
+        res.status(422)
+          .json(toMessage(detail))
+      }
+    } else {
+      next()
+    }
+  }
+
+  app
+    .get('/api/:id', validate, getFileNameMiddleware, getFilePathMiddleware, fileMiddleware, ({ locals: { filePath } }, res) => {
+      res.sendFile(filePath, { root: '.' })
+    })
+}
+
+{
+  const schema = Joi.object().keys({
+    id: (
+      Joi.string()
+        .min(24)
+        .max(24)
+        .regex(ID)
+        .required()
+    ),
+    type: (
+      Joi.string()
+        .lowercase()
+        .valid('jpg', 'png')
+        .required()
+    )
+  })
+
+  function validate ({ params }, res, next) {
+    const {
+      error
+    } = schema.validate(params)
+
+    if (error) {
+      const {
+        details
+      } = error
+
+      if (details.length > 1) {
+        res.status(422)
+          .json({ messages: details.map(toMessage) })
+      } else {
+        const [
+          detail
+        ] = details
+
+        res.status(422)
+          .json(toMessage(detail))
+      }
+    } else {
+      next()
+    }
+  }
+
+  app
+    .get('/api/:id/:type', validate, getFileNameMiddleware, getFilePathMiddleware, fileTypeMiddleware, ({ locals: { filePath } }, res) => {
+      res.sendFile(filePath, { root: '.' })
+    })
+}
+
 io.on('connection', (socket) => {
   log('connection')
 
@@ -188,7 +292,7 @@ server.listen(PORT, async () => {
 
   await connect()
 
-  tifModel
+  getTifModel()
     .watch()
     .on('change', (data) => {
       log('change')
