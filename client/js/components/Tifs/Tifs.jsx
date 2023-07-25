@@ -15,8 +15,8 @@ function Type ({ type, handleChange }) {
 }
 
 Type.propTypes = {
-  type: PropTypes.string.isRequired(),
-  handleChange: PropTypes.func.isRequired()
+  type: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired
 }
 
 export default function Tifs () {
