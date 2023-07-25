@@ -8,7 +8,7 @@ export const TifsContext = createContext({
 
 export default function TifsProvider ({ children }) {
   const [isConnected, setIsConnected] = useState(false)
-  const [tifs] = useState()
+  const [tifs, setTifs] = useState([])
 
   useEffect(() => {
     const socket = io({
@@ -20,6 +20,9 @@ export default function TifsProvider ({ children }) {
     socket
       .on('connect', () => {
         setIsConnected(true)
+      })
+      .on('hello', (tifs) => {
+        setTifs(tifs)
       })
       .on('insert', (data) => console.log('insert', data))
       .on('update', (data) => console.log('update', data))

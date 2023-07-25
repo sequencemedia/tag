@@ -279,12 +279,14 @@ app.get('/', (req, res) => {
     })
 }
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   log('connection')
 
-  socket.on('disconnect', () => {
-    log('disconnect')
-  })
+  socket
+    .on('disconnect', () => {
+      log('disconnect')
+    })
+    .emit('hello', await getTifModel().find({ removed: { $ne: true } }))
 })
 
 server.listen(PORT, async () => {
