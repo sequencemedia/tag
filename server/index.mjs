@@ -286,7 +286,10 @@ io.on('connection', async (socket) => {
     .on('disconnect', () => {
       log('disconnect')
     })
-    .emit('hello', await getTifModel().find({ removed: { $ne: true } }))
+    .on('tags', ({ id, tags }) => {
+      if (id) socket.emit('tags', tags)
+    })
+    .emit('tifs', await getTifModel().find({ removed: { $ne: true } }))
 })
 
 server.listen(PORT, async () => {

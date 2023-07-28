@@ -1,40 +1,26 @@
 import React, { createContext, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import useSocket from '../../hooks/useSocket.mjs'
 
 export const TifsContext = createContext({
   isConnected: false,
-  tifs: undefined
+  tifs: []
 })
 
 export default function TifsProvider ({ children }) {
-  const [isConnected, setIsConnected] = useState(false)
+  const { isConnected, socket } = useSocket()
   const [tifs, setTifs] = useState([])
 
   useEffect(() => {
-    const socket = io({
-      transports: [
-        'websocket'
-      ]
-    })
-
     socket
-      .on('connect', () => {
-        setIsConnected(true)
-      })
-      .on('hello', (tifs) => {
+      .on('tifs', (tifs) => {
         setTifs(tifs)
-      })
-      .on('insert', (data) => console.log('insert', data))
-      .on('update', (data) => console.log('update', data))
-      .on('disconnect', () => {
-        setIsConnected(false)
       })
     return () => {
       socket
-        .off('connect')
-        .off('disconnect')
+        .off('tifs')
     }
-  }, [])
+  })
 
   return (
     <TifsContext.Provider value={{
