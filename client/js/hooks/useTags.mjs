@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import useSocket from './useSocket.mjs'
 
 export default function useTags (id) {
@@ -16,11 +16,13 @@ export default function useTags (id) {
     }
   }, [])
 
-  return {
-    isConnected,
-    tags,
-    setTags: useCallback((tags) => {
-      if (id) socket.emit('tags', { id, tags })
-    }, [id])
-  }
+  return useMemo(() => {
+    return {
+      isConnected,
+      tags,
+      setTags (tags) {
+        if (id) socket.emit('tags', { id, tags })
+      }
+    }
+  }, [id, isConnected, tags])
 }

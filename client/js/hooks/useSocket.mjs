@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 export default function useSocket () {
   const [isConnected, setIsConnected] = useState(false)
@@ -25,8 +25,10 @@ export default function useSocket () {
     }
   }, [])
 
-  return {
-    isConnected,
-    socket
-  }
+  return useMemo(() => {
+    return {
+      isConnected,
+      socket
+    }
+  }, [isConnected, socket])
 }

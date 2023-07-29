@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import useSocket from '../../hooks/useSocket.mjs'
+
+import useSocket from '#client/hooks/useSocket'
 
 export const TifsContext = createContext({
   isConnected: false,

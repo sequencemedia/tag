@@ -58,6 +58,9 @@
   "imports": {
     "#config/*": "./config/*.mjs",
     "#config": "./config/index.mjs",
+    "#client/common": "./client/js/common/index.mjs",
+    "#client/components/*": "./client/js/components/*.jsx",
+    "#client/hooks/*": "./client/js/hooks/*.mjs",
     "#server/middlewares": "./server/middlewares/index.mjs",
     "#server/models/*": "./server/models/*.mjs",
     "#server/model-schemas/*": "./server/model-schemas/*.mjs"

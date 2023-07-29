@@ -1,7 +1,14 @@
 import React, { useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 
-import useTags from '../../hooks/useTags.mjs'
+import useTags from '#client/hooks/useTags'
+
+import {
+  hideTag,
+  hasText
+} from '#client/common'
+
+import Tags from '#client/components/Tags/Tags'
 
 import {
   TifsContext
@@ -19,99 +26,6 @@ function Type ({ type, handleChange }) {
 Type.propTypes = {
   type: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired
-}
-
-const DEFAULT_STYLE = {
-  position: 'absolute',
-  left: 0,
-  top: 0,
-  fontSize: '16px',
-  fontFamily: 'monospace',
-  lineHeight: '16px',
-  minHeight: '48px',
-  minWidth: '250px',
-  borderColor: 'white',
-  borderRadius: '4px',
-  backgroundColor: 'white'
-}
-
-function getEventTargetValue ({ target: { value = '' } }) {
-  return value
-}
-
-function TagEditor ({ tag, handleChange }) {
-  const {
-    x,
-    y,
-    text
-  } = tag
-
-  return (
-    <textarea
-      style={{ ...DEFAULT_STYLE, left: x + 'px', top: y + 'px' }}
-      onClick={(event) => { event.stopPropagation() }}
-      onChange={(event) => {
-        event.stopPropagation()
-
-        handleChange(getEventTargetValue(event))
-      }}
-      value={text ?? ''}
-    />
-  )
-}
-
-TagEditor.propTypes = {
-  tag: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    text: PropTypes.string
-  }),
-  handleChange: PropTypes.func.isRequired
-}
-
-function Tag ({ tag, handleClick }) {
-  const {
-    x,
-    y,
-    text
-  } = tag
-
-  return (
-    <pre
-      style={{ ...DEFAULT_STYLE, left: x + 'px', top: y + 'px', minHeight: '16px', margin: 0, padding: '3px 3px' }}
-      onClick={(event) => {
-        event.stopPropagation()
-
-        handleClick()
-      }}>
-      {text}
-    </pre>
-  )
-}
-
-Tag.propTypes = {
-  tag: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    text: PropTypes.string
-  }),
-  handleClick: PropTypes.func.isRequired
-}
-
-function hideTag (tag) {
-  tag.edit = false
-  return tag
-}
-
-function getShowTagFor (currentTag) {
-  return function showTag (tag) {
-    tag.edit = tag === currentTag
-    return tag
-  }
-}
-
-function hasText ({ text }) {
-  return !!text
 }
 
 function Tifs ({ type, tifs }) {
@@ -188,45 +102,7 @@ function Tifs ({ type, tifs }) {
                 setTags(now)
               }}
             />
-            {tags.map((currentTag) => {
-              const {
-                edit
-              } = currentTag
-
-              function handleClick () {
-                const now = (
-                  tags
-                    .map(hideTag)
-                    .filter((tag) => tag !== currentTag)
-                    .concat(currentTag)
-                    .filter(hasText)
-                )
-
-                currentTag.edit = true
-
-                setTags(now)
-              }
-
-              function handleChange (text) {
-                currentTag.text = text
-
-                const now = (
-                  tags
-                    .map(getShowTagFor(currentTag))
-                    .filter((tag) => tag !== currentTag)
-                    .concat(currentTag)
-                    .filter(hasText)
-                )
-
-                setTags(now)
-              }
-
-              return (
-                edit
-                  ? <TagEditor tag={currentTag} handleChange={handleChange} />
-                  : <Tag tag={currentTag} handleClick={handleClick} />
-              )
-            })}
+            <Tags tags={tags} handleChange={setTags} />
           </div>
 
           <div className='forward'>
