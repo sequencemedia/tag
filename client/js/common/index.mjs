@@ -9,6 +9,13 @@ export function getShowTagFor (currentTag) {
   }
 }
 
+export function getHideTagFor (currentTag) {
+  return function hideTag (tag) {
+    tag.edit = tag !== currentTag
+    return tag
+  }
+}
+
 export function hideTag (tag) {
   tag.edit = false
   return tag
