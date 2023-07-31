@@ -12,6 +12,7 @@ import {
   fileMiddleware,
   fileTypeMiddleware
 } from '#server/middlewares'
+import getTagModel from '#server/models/tag'
 import getTifModel from '#server/models/tif'
 import getMongoDBUri from '#config/get-mongodb-uri'
 
@@ -282,11 +283,25 @@ app.get('/', (req, res) => {
 io.on('connection', async (socket) => {
   log('connection')
 
+  const tagModel = getTagModel()
+  const tifModel = getTifModel()
+
   socket
     .on('disconnect', () => {
       log('disconnect')
     })
-    .emit('hello', await getTifModel().find({ removed: { $ne: true } }))
+    .on('tag', async (tag) => {
+      const { text, key } = tag
+
+      if (text) {
+        await tagModel.updateOne({ key: { $eq: key } }, { $set: tag }, { upsert: true })
+      } else {
+        await tagModel.deleteOne({ key: { $eq: key } })
+      }
+    })
+    .on('tags', async (tif) => socket.emit('tags', await tagModel.find({ tif: { $eq: tif } })))
+    .on('tifs', async () => socket.emit('tifs', await tifModel.find({ removed: { $ne: true } })))
+    .emit('tifs', await tifModel.find({ removed: { $ne: true } }))
 })
 
 server.listen(PORT, async () => {
