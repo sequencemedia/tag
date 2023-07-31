@@ -9,7 +9,7 @@ import {
 import TagEditor from './TagEditor.jsx'
 import Tag from './Tag.jsx'
 
-export default function Tags ({ tags, handleChange }) {
+export default function Tags ({ tags, handleChange, imgRef }) {
   return tags.map((currentTag, index) => {
     const {
       edit
@@ -19,6 +19,7 @@ export default function Tags ({ tags, handleChange }) {
       edit
         ? <TagEditor
             key={index}
+            imgRef={imgRef}
             tag={currentTag}
             handleChange={(text) => {
               currentTag.text = text
@@ -36,6 +37,7 @@ export default function Tags ({ tags, handleChange }) {
         />
         : <Tag
             key={index}
+            imgRef={imgRef}
             tag={currentTag}
             handleClick={() => {
               const now = (

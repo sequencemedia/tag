@@ -1,21 +1,25 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   nanoid
 } from 'nanoid'
 
-import useTags from '#client/hooks/useTags'
-
 import {
+  getNaturalX,
+  getNaturalY,
   hideTag,
   hasText
 } from '#client/common'
 
-import Tags from '#client/components/Tags/Tags'
+import useTags from '#client/hooks/useTags'
 
 import {
   TifsContext
 } from './TifsProvider.jsx'
+
+import Reverse from './Reverse.jsx'
+import Tif from './Tif.jsx'
+import Forward from './Forward.jsx'
 
 function Type ({ type, handleChange }) {
   return (
@@ -32,6 +36,7 @@ Type.propTypes = {
 }
 
 function Tifs ({ type, tifs }) {
+  const ref = useRef()
   const [selectedIndex, setSelectedIndex] = useState(0)
 
   const total = tifs.length
@@ -42,6 +47,18 @@ function Tifs ({ type, tifs }) {
   const { _id: tif } = tifs[index]
 
   const { tags, setTags } = useTags(tif)
+
+  const handleReverseClick = useCallback(() => {
+    const now = Math.max(0, index - 1)
+
+    if (now !== index) setSelectedIndex(now)
+  }, [index, setSelectedIndex])
+
+  const handleForwardClick = useCallback(() => {
+    const now = Math.min(lastIndex, index + 1)
+
+    if (now !== index) setSelectedIndex(now)
+  }, [index, lastIndex, setSelectedIndex])
 
   return (
       <div className='tifs' onClick={(event) => {
@@ -57,70 +74,50 @@ function Tifs ({ type, tifs }) {
       }}>
         <h2>{index + 1} of {total}</h2>
         <div className='tif-container'>
-          <div className='reverse'>
-            <button
-              disabled={isFirstSelected}
-              onClick={() => {
-                const now = Math.max(0, index - 1)
+          <Reverse
+            disabled={isFirstSelected}
+            handleClick={handleReverseClick}
+          />
 
-                if (now !== index) setSelectedIndex(now)
-              }}>
-              Reverse
-            </button>
-          </div>
+          <Tif
+            tif={tif}
+            type={type}
+            tags={tags}
+            handleClick={(event) => {
+              event.stopPropagation()
 
-          <div className='tif' style={{ position: 'relative' }}>
-            <img
-              src={`/api/${tif}/${type}`}
-              onClick={(event) => {
-                event.stopPropagation()
+              const key = nanoid()
 
-                const key = nanoid()
+              const {
+                clientX: x,
+                clientY: y,
+                target: img
+              } = event
 
-                const {
-                  clientX,
-                  clientY,
-                  target: {
-                    parentElement: {
-                      offsetLeft,
-                      offsetTop
-                    },
-                    naturalWidth,
-                    naturalHeight,
-                    width,
-                    height
-                  }
-                } = event
+              const {
+                scrollingElement
+              } = document
 
-                const w = naturalWidth / width
-                const h = naturalHeight / height
-                const x = Math.round((clientX - offsetLeft) * w)
-                const y = Math.round((clientY - offsetTop) * h)
+              const X = getNaturalX(x, img, scrollingElement)
+              const Y = getNaturalY(y, img, scrollingElement)
 
-                const now = (
-                  tags
-                    .map(hideTag)
-                    .filter(hasText)
-                    .concat({ key, tif, x, y, edit: true })
-                )
+              const now = (
+                tags
+                  .map(hideTag)
+                  .filter(hasText)
+                  .concat({ key, tif, x: X, y: Y, edit: true })
+              )
 
-                setTags(now)
-              }}
-            />
-            <Tags tags={tags} handleChange={setTags} />
-          </div>
+              setTags(now)
+            }}
+            handleChange={setTags}
+            ref={ref}
+          />
 
-          <div className='forward'>
-            <button
-              disabled={isLastSelected}
-              onClick={() => {
-                const now = Math.min(lastIndex, index + 1)
-
-                if (now !== index) setSelectedIndex(now)
-              }}>
-              Forward
-            </button>
-          </div>
+          <Forward
+            disabled={isLastSelected}
+            handleClick={handleForwardClick}
+          />
         </div>
       </div>
   )

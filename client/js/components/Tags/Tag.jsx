@@ -1,32 +1,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import {
+  getRenderedX,
+  getRenderedY
+} from '#client/common'
+
 const DEFAULT_STYLE = {
   position: 'absolute',
   left: 0,
-  top: 0,
-  fontSize: '16px',
-  fontFamily: 'monospace',
-  lineHeight: '16px',
-  minHeight: '16px',
-  minWidth: '250px',
-  borderColor: 'white',
-  borderRadius: '4px',
-  backgroundColor: 'white',
-  margin: 0,
-  padding: '3px'
+  top: 0
 }
 
-export default function Tag ({ tag, handleClick }) {
+export default function Tag ({ tag, handleClick, imgRef }) {
   const {
     x,
     y,
     text
   } = tag
 
+  const {
+    current: img
+  } = imgRef
+
+  const X = getRenderedX(img, x)
+  const Y = getRenderedY(img, y)
+
   return (
     <pre
-      style={{ ...DEFAULT_STYLE, left: x + 'px', top: y + 'px' }}
+      className='tag'
+      style={{ ...DEFAULT_STYLE, left: X + 'px', top: Y + 'px' }}
       onClick={(event) => {
         event.stopPropagation()
 
@@ -43,5 +46,8 @@ Tag.propTypes = {
     y: PropTypes.number.isRequired,
     text: PropTypes.string
   }),
-  handleClick: PropTypes.func.isRequired
+  handleClick: PropTypes.func.isRequired,
+  imgRef: PropTypes.shape({
+    current: PropTypes.shape().isRequired
+  }).isRequired
 }

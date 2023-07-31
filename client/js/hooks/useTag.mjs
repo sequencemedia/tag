@@ -2,8 +2,6 @@ import { useEffect } from 'react'
 import useSocket from './useSocket.mjs'
 
 export default function useTag (tag) {
-  console.log('useTag')
-
   const { isConnected, socket } = useSocket()
 
   useEffect(() => {
@@ -11,7 +9,15 @@ export default function useTag (tag) {
       socket
         .emit('tag', tag)
     }
-  })
+  }, [isConnected, tag])
 
-  return tag
+  return {
+    ...tag,
+    setText (text) {
+      if (isConnected) {
+        socket
+          .emit('tag', { ...tag, text })
+      }
+    }
+  }
 }
