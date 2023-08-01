@@ -5,6 +5,7 @@ import {
 } from 'nanoid'
 
 import {
+  getShowTagFor,
   hideTag,
   hasText
 } from '#client/common'
@@ -91,11 +92,28 @@ function Tifs ({ type, tifs }) {
 
               setTags(now)
             }}
-            handleTagClick={(tags) => {
-              setTags(tags)
+            handleChange={(currentTag, text) => {
+              currentTag.text = text
+
+              const now = (
+                tags
+                  .map(getShowTagFor(currentTag))
+                  .filter((tag) => tag !== currentTag)
+                  .concat(currentTag)
+              )
+
+              setTags(now)
             }}
-            handleChange={(tags) => {
-              setTags(tags)
+            handleTagClick={(currentTag) => {
+              const now = (
+                tags
+                  .map(getShowTagFor(currentTag))
+                  .filter((tag) => tag !== currentTag)
+                  .filter(hasText)
+                  .concat(currentTag)
+              )
+
+              setTags(now)
             }}
             ref={ref}
           />

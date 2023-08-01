@@ -1,11 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import {
-  getShowTagFor,
-  hasText
-} from '#client/common'
-
 import TagEditor from './TagEditor.jsx'
 import Tag from './Tag.jsx'
 
@@ -22,16 +17,7 @@ export default function Tags ({ tags, handleClick, handleChange, imgRef }) {
             imgRef={imgRef}
             tag={currentTag}
             handleChange={(text) => {
-              currentTag.text = text
-
-              const now = (
-                tags
-                  .map(getShowTagFor(currentTag))
-                  .filter((tag) => tag !== currentTag)
-                  .concat(currentTag)
-              )
-
-              handleChange(now)
+              handleChange(currentTag, text)
             }}
         />
         : <Tag
@@ -39,15 +25,7 @@ export default function Tags ({ tags, handleClick, handleChange, imgRef }) {
             imgRef={imgRef}
             tag={currentTag}
             handleClick={() => {
-              const now = (
-                tags
-                  .map(getShowTagFor(currentTag))
-                  .filter((tag) => tag !== currentTag)
-                  .filter(hasText)
-                  .concat(currentTag)
-              )
-
-              handleClick(now)
+              handleClick(currentTag)
             }}
           />
     )
