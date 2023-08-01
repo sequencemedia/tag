@@ -1,21 +1,43 @@
 import React, { forwardRef } from 'react'
 import PropTypes from 'prop-types'
 
+import {
+  getNaturalX,
+  getNaturalY
+} from '#client/common'
+
 import Tags from '#client/components/Tags/Tags'
 
 const STYLE = {
   position: 'relative'
 }
 
-const Tif = forwardRef(({ tif, type, tags, handleClick, handleChange }, ref) => (
+const Tif = forwardRef(({ tif, type, tags, handleTifClick, handleTagClick, handleChange }, ref) => (
   <div className='tif' style={STYLE}>
     <img
       src={`/api/${tif}/${type}`}
-      onClick={handleClick}
+      onClick={(event) => {
+        event.stopPropagation()
+
+        const {
+          clientX: X,
+          clientY: Y,
+          target: img
+        } = event
+
+        const {
+          scrollingElement
+        } = document
+
+        const x = getNaturalX(X, img, scrollingElement)
+        const y = getNaturalY(Y, img, scrollingElement)
+
+        handleTifClick({ x, y })
+      }}
       ref={ref}
     />
 
-    <Tags tags={tags} handleChange={handleChange} imgRef={ref} />
+    <Tags tags={tags} handleClick={handleTagClick} handleChange={handleChange} imgRef={ref} />
   </div>
 ))
 
@@ -33,6 +55,7 @@ Tif.propTypes = {
       text: PropTypes.string
     })
   ),
-  handleClick: PropTypes.func.isRequired,
+  handleTifClick: PropTypes.func.isRequired,
+  handleTagClick: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired
 }

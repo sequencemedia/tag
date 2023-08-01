@@ -17,8 +17,8 @@ const DEFAULT_STYLE = {
 
 export default function TagEditor ({ tag, handleChange, imgRef }) {
   const {
-    x,
-    y,
+    x: X,
+    y: Y,
     text,
     setText
   } = useTag(tag)
@@ -27,20 +27,22 @@ export default function TagEditor ({ tag, handleChange, imgRef }) {
     current: img
   } = imgRef
 
-  const X = getRenderedX(img, x)
-  const Y = getRenderedY(img, y)
+  const x = getRenderedX(img, X)
+  const y = getRenderedY(img, Y)
 
   return (
     <textarea
       className='tag-editor'
-      style={{ ...DEFAULT_STYLE, left: X + 'px', top: Y + 'px' }}
-      onClick={(event) => { event.stopPropagation() }}
+      style={{ ...DEFAULT_STYLE, left: x + 'px', top: y + 'px' }}
+      onClick={(event) => {
+        event.stopPropagation()
+      }}
       onChange={(event) => {
         const text = getEventTargetValue(event)
 
         setText(text)
 
-        handleChange(text) // getEventTargetValue(event))
+        handleChange(text)
       }}
       value={text ?? ''}
       data-gramm="false"

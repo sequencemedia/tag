@@ -9,7 +9,7 @@ import {
 import TagEditor from './TagEditor.jsx'
 import Tag from './Tag.jsx'
 
-export default function Tags ({ tags, handleChange, imgRef }) {
+export default function Tags ({ tags, handleClick, handleChange, imgRef }) {
   return tags.map((currentTag, index) => {
     const {
       edit
@@ -29,7 +29,6 @@ export default function Tags ({ tags, handleChange, imgRef }) {
                   .map(getShowTagFor(currentTag))
                   .filter((tag) => tag !== currentTag)
                   .concat(currentTag)
-                  .filter(hasText)
               )
 
               handleChange(now)
@@ -44,11 +43,11 @@ export default function Tags ({ tags, handleChange, imgRef }) {
                 tags
                   .map(getShowTagFor(currentTag))
                   .filter((tag) => tag !== currentTag)
-                  .concat(currentTag)
                   .filter(hasText)
+                  .concat(currentTag)
               )
 
-              handleChange(now)
+              handleClick(now)
             }}
           />
     )

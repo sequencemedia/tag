@@ -5,8 +5,6 @@ import {
 } from 'nanoid'
 
 import {
-  getNaturalX,
-  getNaturalY,
   hideTag,
   hasText
 } from '#client/common'
@@ -83,34 +81,22 @@ function Tifs ({ type, tifs }) {
             tif={tif}
             type={type}
             tags={tags}
-            handleClick={(event) => {
-              event.stopPropagation()
-
-              const key = nanoid()
-
-              const {
-                clientX: x,
-                clientY: y,
-                target: img
-              } = event
-
-              const {
-                scrollingElement
-              } = document
-
-              const X = getNaturalX(x, img, scrollingElement)
-              const Y = getNaturalY(y, img, scrollingElement)
-
+            handleTifClick={({ x, y }) => {
               const now = (
                 tags
                   .map(hideTag)
                   .filter(hasText)
-                  .concat({ key, tif, x: X, y: Y, edit: true })
+                  .concat({ key: nanoid(), tif, x, y, edit: true })
               )
 
               setTags(now)
             }}
-            handleChange={setTags}
+            handleTagClick={(tags) => {
+              setTags(tags)
+            }}
+            handleChange={(tags) => {
+              setTags(tags)
+            }}
             ref={ref}
           />
 
