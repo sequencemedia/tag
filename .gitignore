@@ -16,3 +16,5 @@
 .cache/*.jpg
 .cache/*.png
 .cache/*.tif
+
+.files
