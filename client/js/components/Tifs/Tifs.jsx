@@ -95,14 +95,7 @@ function Tifs ({ type, tifs }) {
             handleChange={(currentTag, text) => {
               currentTag.text = text
 
-              const now = (
-                tags
-                  .map(getShowTagFor(currentTag))
-                  .filter((tag) => tag !== currentTag)
-                  .concat(currentTag)
-              )
-
-              setTags(now)
+              setTags([...tags])
             }}
             handleTagClick={(currentTag) => {
               const now = (
