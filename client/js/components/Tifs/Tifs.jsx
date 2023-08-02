@@ -4,39 +4,14 @@ import PropTypes from 'prop-types'
 import useTags from '#client/hooks/useTags'
 
 import {
-  getEventTargetValue
-} from '#client/common'
-
-import {
   TifsContext
 } from './TifsProvider.jsx'
 
 import Connecting from './Connecting.jsx'
-
+import Type from './Type.jsx'
 import Reverse from './Reverse.jsx'
 import Tif from './Tif.jsx'
 import Forward from './Forward.jsx'
-
-function Type ({ type, handleChange }) {
-  return (
-    <div className='type' onChange={(event) => handleChange(getEventTargetValue(event))}>
-      <label>
-        <input type="radio" name="type" checked={type === 'jpg'} value='jpg' />
-        <span>JPG</span>
-      </label>
-
-      <label>
-        <input type="radio" name="type" checked={type === 'png'} value='png' />
-        <span>PNG</span>
-      </label>
-    </div>
-  )
-}
-
-Type.propTypes = {
-  type: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired
-}
 
 function Tifs ({ type, tifs, changeTifHasPaint, changeTifIsLoaded, changeTifHasError }) {
   const ref = useRef()
