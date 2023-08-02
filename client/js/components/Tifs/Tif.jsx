@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import {
@@ -12,34 +12,83 @@ const STYLE = {
   position: 'relative'
 }
 
-const Tif = forwardRef(({ tif, type, tags, handleTifClick, handleTagClick, handleChange }, ref) => (
-  <div className='tif' style={STYLE}>
-    <img
-      src={`/api/${tif}/${type}`}
-      onClick={(event) => {
-        event.stopPropagation()
+function TifError () {
+  return (
+    <div className='tif-error'>
+      Error
+    </div>
+  )
+}
 
-        const {
-          clientX: X,
-          clientY: Y,
-          target: img
-        } = event
+const Tif = forwardRef(({
+  tif,
+  type,
+  tags,
+  isLoaded,
+  hasError,
+  handleTifPaint,
+  handleTifLoad,
+  handleTifError,
+  handleTifClick,
+  handleTagClick,
+  handleChange
+}, ref) => {
+  const {
+    current
+  } = ref
 
-        const {
-          scrollingElement
-        } = document
+  useEffect(() => {
+    let resizeObserver
 
-        const x = getNaturalX(X, img, scrollingElement)
-        const y = getNaturalY(Y, img, scrollingElement)
+    if (current) {
+      resizeObserver = new ResizeObserver(() => {
+        handleTifPaint(tif)
+      })
 
-        handleTifClick({ x, y })
-      }}
-      ref={ref}
-    />
+      resizeObserver.observe(current)
+    }
 
-    <Tags tags={tags} handleClick={handleTagClick} handleChange={handleChange} imgRef={ref} />
-  </div>
-))
+    return () => {
+      if (resizeObserver) resizeObserver.disconnect()
+    }
+  }, [current])
+
+  return (
+    <div className='tif' style={STYLE}>
+      <img
+        src={`/api/${tif}/${type}`}
+        onLoad={() => {
+          handleTifLoad(tif)
+        }}
+        onError={() => {
+          handleTifError(tif)
+        }}
+        onClick={(event) => {
+          event.stopPropagation()
+
+          const {
+            clientX: X,
+            clientY: Y,
+            target: img
+          } = event
+
+          const {
+            scrollingElement
+          } = document
+
+          const x = getNaturalX(X, img, scrollingElement)
+          const y = getNaturalY(Y, img, scrollingElement)
+
+          handleTifClick({ tif, x, y })
+        }}
+        ref={ref}
+      />
+
+      {isLoaded && <Tags tags={tags} handleClick={handleTagClick} handleChange={handleChange} imgRef={ref} />}
+      {hasError && <TifError />}
+    </div>
+  )
+})
 
 export default Tif
 

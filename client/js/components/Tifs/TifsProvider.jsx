@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext, useReducer, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import useSocket from '#client/hooks/useSocket'
@@ -8,14 +8,90 @@ export const TifsContext = createContext({
   tifs: []
 })
 
+function handleChangeTifs (state, { tifs }) {
+  return tifs
+}
+
+function handleChangeTifHasPaint (state, { tif: currentKey }) {
+  return (
+    state
+      .map((tif) => {
+        const {
+          _id: key
+        } = tif
+
+        if (key === currentKey) {
+          return { ...tif, hasPaint: true }
+        }
+
+        return tif
+      }, [])
+  )
+}
+
+function handleChangeTifIsLoaded (state, { tif: currentKey }) {
+  return (
+    state
+      .map((tif) => {
+        const {
+          _id: key
+        } = tif
+
+        if (key === currentKey) {
+          return { ...tif, isLoaded: true }
+        }
+
+        return tif
+      }, [])
+  )
+}
+
+function handleChangeTifHasError (state, { tif: currentKey }) {
+  return (
+    state
+      .map((tif) => {
+        const {
+          _id: key
+        } = tif
+
+        if (key === currentKey) {
+          return { ...tif, hasError: true }
+        }
+
+        return tif
+      }, [])
+  )
+}
+
+function reducer (state, action) {
+  const { type } = action
+
+  switch (type) {
+    case 'CHANGE_TIFS':
+      return handleChangeTifs(state, action)
+
+    case 'CHANGE_TIF_HAS_PAINT':
+      return handleChangeTifHasPaint(state, action)
+
+    case 'CHANGE_TIF_IS_LOADED':
+      return handleChangeTifIsLoaded(state, action)
+
+    case 'CHANGE_TIF_HAS_ERROR':
+      return handleChangeTifHasError(state, action)
+
+    default:
+      return state
+  }
+}
+
 export default function TifsProvider ({ children }) {
   const { isConnected, socket } = useSocket()
-  const [tifs, setTifs] = useState([])
+  const [tifs, dispatch] = useReducer(reducer, [])
 
   useEffect(() => {
     socket
       .on('tifs', (tifs) => {
-        setTifs(tifs)
+        dispatch({ type: 'CHANGE_TIFS', tifs })
       })
     return () => {
       socket
@@ -26,7 +102,16 @@ export default function TifsProvider ({ children }) {
   return (
     <TifsContext.Provider value={{
       isConnected,
-      tifs
+      tifs,
+      changeTifHasPaint (tif) {
+        dispatch({ type: 'CHANGE_TIF_HAS_PAINT', tif })
+      },
+      changeTifIsLoaded (tif) {
+        dispatch({ type: 'CHANGE_TIF_IS_LOADED', tif })
+      },
+      changeTifHasError (tif) {
+        dispatch({ type: 'CHANGE_TIF_HAS_ERROR', tif })
+      }
     }}>
       {children}
     </TifsContext.Provider>

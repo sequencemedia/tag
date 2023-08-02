@@ -18,6 +18,7 @@ export default function useSocket () {
       .on('disconnect', () => {
         setIsConnected(false)
       })
+
     return () => {
       socket
         .off('connect')

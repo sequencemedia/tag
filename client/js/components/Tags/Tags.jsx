@@ -7,25 +7,25 @@ import Tag from './Tag.jsx'
 export default function Tags ({ tags, handleClick, handleChange, imgRef }) {
   return tags.map((currentTag, index) => {
     const {
-      edit
+      hasEditor = false
     } = currentTag
 
     return (
-      edit
-        ? <TagEditor
-            key={index}
-            imgRef={imgRef}
-            tag={currentTag}
-            handleChange={(text) => {
-              handleChange(currentTag, text)
-            }}
-        />
-        : <Tag
+      hasEditor !== true
+        ? <Tag
             key={index}
             imgRef={imgRef}
             tag={currentTag}
             handleClick={() => {
               handleClick(currentTag)
+            }}
+          />
+        : <TagEditor
+            key={index}
+            imgRef={imgRef}
+            tag={currentTag}
+            handleChange={(text) => {
+              handleChange(currentTag, text)
             }}
           />
     )

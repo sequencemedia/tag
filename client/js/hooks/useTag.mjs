@@ -11,13 +11,5 @@ export default function useTag (tag) {
     }
   }, [isConnected, tag])
 
-  return {
-    ...tag,
-    setText (text) {
-      if (isConnected) {
-        socket
-          .emit('tag', { ...tag, text })
-      }
-    }
-  }
+  return tag
 }

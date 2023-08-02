@@ -19,8 +19,7 @@ export default function TagEditor ({ tag, handleChange, imgRef }) {
   const {
     x: X,
     y: Y,
-    text,
-    setText
+    text
   } = useTag(tag)
 
   const {
@@ -38,11 +37,7 @@ export default function TagEditor ({ tag, handleChange, imgRef }) {
         event.stopPropagation()
       }}
       onChange={(event) => {
-        const text = getEventTargetValue(event)
-
-        setText(text)
-
-        handleChange(text)
+        handleChange(getEventTargetValue(event))
       }}
       value={text ?? ''}
       data-gramm="false"

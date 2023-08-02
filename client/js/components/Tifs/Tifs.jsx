@@ -1,16 +1,11 @@
-import React, { useState, useContext, useRef, useCallback } from 'react'
+import React, { useState, useMemo, useContext, useRef, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {
-  nanoid
-} from 'nanoid'
-
-import {
-  getShowTagFor,
-  hideTag,
-  hasText
-} from '#client/common'
 
 import useTags from '#client/hooks/useTags'
+
+import {
+  getEventTargetValue
+} from '#client/common'
 
 import {
   TifsContext
@@ -22,9 +17,16 @@ import Forward from './Forward.jsx'
 
 function Type ({ type, handleChange }) {
   return (
-    <div onChange={({ target: { value } }) => handleChange(value)}>
-      <input type="radio" name="type" checked={type === 'jpg'} value='jpg' />
-      <input type="radio" name="type" checked={type === 'png'} value='png' />
+    <div className='type' onChange={(event) => handleChange(getEventTargetValue(event))}>
+      <label>
+        <input type="radio" name="type" checked={type === 'jpg'} value='jpg' />
+        <span>JPG</span>
+      </label>
+
+      <label>
+        <input type="radio" name="type" checked={type === 'png'} value='png' />
+        <span>PNG</span>
+      </label>
     </div>
   )
 }
@@ -34,7 +36,7 @@ Type.propTypes = {
   handleChange: PropTypes.func.isRequired
 }
 
-function Tifs ({ type, tifs }) {
+function Tifs ({ type, tifs, changeTifHasPaint, changeTifIsLoaded, changeTifHasError }) {
   const ref = useRef()
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -45,7 +47,16 @@ function Tifs ({ type, tifs }) {
   const isLastSelected = index === lastIndex
   const { _id: tif } = tifs[index]
 
-  const { tags, setTags } = useTags(tif)
+  const {
+    tags,
+    hideEditTag,
+    createTag,
+    changeTagText,
+    showEditTag
+  } = useTags(tif)
+
+  const isLoaded = useMemo(() => tifs.some(({ _id: key, isLoaded = false }) => key === tif && isLoaded), [tifs, tif])
+  const hasError = useMemo(() => tifs.some(({ _id: key, hasError = false }) => key === tif && hasError), [tifs, tif])
 
   const handleReverseClick = useCallback(() => {
     const now = Math.max(0, index - 1)
@@ -60,63 +71,51 @@ function Tifs ({ type, tifs }) {
   }, [index, lastIndex, setSelectedIndex])
 
   return (
-      <div className='tifs' onClick={(event) => {
-        event.stopPropagation()
+    <div className='tifs' onClick={(event) => {
+      event.stopPropagation()
 
-        const now = (
-          tags
-            .map(hideTag)
-            .filter(hasText)
-        )
+      hideEditTag()
+    }}>
+      <h2>{index + 1} of {total}</h2>
+      <div className='tif-container'>
+        <Reverse
+          disabled={isFirstSelected}
+          handleClick={handleReverseClick}
+        />
 
-        setTags(now)
-      }}>
-        <h2>{index + 1} of {total}</h2>
-        <div className='tif-container'>
-          <Reverse
-            disabled={isFirstSelected}
-            handleClick={handleReverseClick}
-          />
+        <Tif
+          tif={tif}
+          isLoaded={isLoaded}
+          hasError={hasError}
+          type={type}
+          tags={tags}
+          handleTifPaint={(tif) => {
+            changeTifHasPaint(tif)
+          }}
+          handleTifLoad={(tif) => {
+            changeTifIsLoaded(tif)
+          }}
+          handleTifError={(tif) => {
+            changeTifHasError(tif)
+          }}
+          handleTifClick={({ tif, x, y }) => {
+            createTag(tif, x, y)
+          }}
+          handleChange={(currentTag, text) => {
+            changeTagText(currentTag, text)
+          }}
+          handleTagClick={(currentTag) => {
+            showEditTag(currentTag)
+          }}
+          ref={ref}
+        />
 
-          <Tif
-            tif={tif}
-            type={type}
-            tags={tags}
-            handleTifClick={({ x, y }) => {
-              const now = (
-                tags
-                  .map(hideTag)
-                  .filter(hasText)
-                  .concat({ key: nanoid(), tif, x, y, edit: true })
-              )
-
-              setTags(now)
-            }}
-            handleChange={(currentTag, text) => {
-              currentTag.text = text
-
-              setTags([...tags])
-            }}
-            handleTagClick={(currentTag) => {
-              const now = (
-                tags
-                  .map(getShowTagFor(currentTag))
-                  .filter((tag) => tag !== currentTag)
-                  .filter(hasText)
-                  .concat(currentTag)
-              )
-
-              setTags(now)
-            }}
-            ref={ref}
-          />
-
-          <Forward
-            disabled={isLastSelected}
-            handleClick={handleForwardClick}
-          />
-        </div>
+        <Forward
+          disabled={isLastSelected}
+          handleClick={handleForwardClick}
+        />
       </div>
+    </div>
   )
 }
 
@@ -129,7 +128,10 @@ export default function TifsGroup () {
   const [type, setType] = useState('png')
   const {
     isConnected,
-    tifs
+    tifs,
+    changeTifHasPaint,
+    changeTifIsLoaded,
+    changeTifHasError
   } = useContext(TifsContext)
 
   if (isConnected) {
@@ -137,7 +139,7 @@ export default function TifsGroup () {
       return (
         <div className='tifs-group'>
           <Type type={type} handleChange={setType} />
-          <Tifs type={type} tifs={tifs} />
+          <Tifs type={type} tifs={tifs} changeTifHasPaint={changeTifHasPaint} changeTifIsLoaded={changeTifIsLoaded} changeTifHasError={changeTifHasError} />
         </div>
       )
     }

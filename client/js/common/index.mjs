@@ -4,20 +4,20 @@ export function getEventTargetValue ({ target: { value = '' } }) {
 
 export function getShowTagFor (currentTag) {
   return function showTag (tag) {
-    tag.edit = tag === currentTag
+    tag.hasEditor = tag === currentTag
     return tag
   }
 }
 
 export function getHideTagFor (currentTag) {
   return function hideTag (tag) {
-    tag.edit = tag !== currentTag
+    tag.hasEditor = tag !== currentTag
     return tag
   }
 }
 
 export function hideTag (tag) {
-  tag.edit = false
+  tag.hasEditor = false
   return tag
 }
 
@@ -53,14 +53,40 @@ export function getNaturalY (y, {
   return Math.round(((y - offsetTop) + scrollTop) * h)
 }
 
-export function getRenderedX ({ naturalWidth, width }, x) {
-  const w = naturalWidth / width
+export function getRenderedX (img, x) {
+  const {
+    complete
+  } = img
 
-  return Math.round(x / w)
+  if (complete) {
+    const {
+      naturalWidth,
+      width
+    } = img
+
+    const w = naturalWidth / width
+
+    return Math.round(x / w)
+  }
+
+  return 0
 }
 
-export function getRenderedY ({ naturalHeight, height }, y) {
-  const h = naturalHeight / height
+export function getRenderedY (img, y) {
+  const {
+    complete
+  } = img
 
-  return Math.round(y / h)
+  if (complete) {
+    const {
+      naturalHeight,
+      height
+    } = img
+
+    const h = naturalHeight / height
+
+    return Math.round(y / h)
+  }
+
+  return 0
 }

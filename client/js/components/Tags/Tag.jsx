@@ -14,8 +14,8 @@ const DEFAULT_STYLE = {
 
 export default function Tag ({ tag, handleClick, imgRef }) {
   const {
-    x,
-    y,
+    x: X,
+    y: Y,
     text
   } = tag
 
@@ -23,13 +23,13 @@ export default function Tag ({ tag, handleClick, imgRef }) {
     current: img
   } = imgRef
 
-  const X = getRenderedX(img, x)
-  const Y = getRenderedY(img, y)
+  const x = getRenderedX(img, X)
+  const y = getRenderedY(img, Y)
 
   return (
     <pre
       className='tag'
-      style={{ ...DEFAULT_STYLE, left: X + 'px', top: Y + 'px' }}
+      style={{ ...DEFAULT_STYLE, left: x + 'px', top: y + 'px' }}
       onClick={(event) => {
         event.stopPropagation()
 
