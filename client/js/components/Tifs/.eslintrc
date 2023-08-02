@@ -1,5 +1,6 @@
 {
   "globals": {
-    "io": "readonly"
+    "io": "readonly",
+    "ResizeObserver": "readonly"
   }
 }

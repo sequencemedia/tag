@@ -11,6 +11,8 @@ import {
   TifsContext
 } from './TifsProvider.jsx'
 
+import Connecting from './Connecting.jsx'
+
 import Reverse from './Reverse.jsx'
 import Tif from './Tif.jsx'
 import Forward from './Forward.jsx'
@@ -121,7 +123,10 @@ function Tifs ({ type, tifs, changeTifHasPaint, changeTifIsLoaded, changeTifHasE
 
 Tifs.propTypes = {
   type: PropTypes.string.isRequired,
-  tifs: PropTypes.array.isRequired
+  tifs: PropTypes.array.isRequired,
+  changeTifHasPaint: PropTypes.func.isRequired,
+  changeTifIsLoaded: PropTypes.func.isRequired,
+  changeTifHasError: PropTypes.func.isRequired
 }
 
 export default function TifsGroup () {
@@ -139,11 +144,20 @@ export default function TifsGroup () {
       return (
         <div className='tifs-group'>
           <Type type={type} handleChange={setType} />
-          <Tifs type={type} tifs={tifs} changeTifHasPaint={changeTifHasPaint} changeTifIsLoaded={changeTifIsLoaded} changeTifHasError={changeTifHasError} />
+
+          <Tifs
+            type={type}
+            tifs={tifs}
+            changeTifHasPaint={changeTifHasPaint}
+            changeTifIsLoaded={changeTifIsLoaded}
+            changeTifHasError={changeTifHasError}
+          />
         </div>
       )
     }
   }
 
-  return null
+  return (
+    <Connecting />
+  )
 }

@@ -69,7 +69,7 @@ const Tif = forwardRef(({
           const {
             clientX: X,
             clientY: Y,
-            target: img
+            target: img // or `current`
           } = event
 
           const {
@@ -104,6 +104,11 @@ Tif.propTypes = {
       text: PropTypes.string
     })
   ),
+  isLoaded: PropTypes.bool.isRequired,
+  hasError: PropTypes.bool.isRequired,
+  handleTifPaint: PropTypes.func.isRequired,
+  handleTifLoad: PropTypes.func.isRequired,
+  handleTifError: PropTypes.func.isRequired,
   handleTifClick: PropTypes.func.isRequired,
   handleTagClick: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired
