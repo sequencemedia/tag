@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useMemo } from 'react'
+import { useContext, useReducer, useEffect, useMemo } from 'react'
 import { nanoid } from 'nanoid'
 
 import {
@@ -7,7 +7,9 @@ import {
   hasText
 } from '#client/common'
 
-import useSocket from './useSocket.mjs'
+import {
+  SocketContext
+} from '#client/components/Socket/SocketProvider'
 
 function handleCreateTag (state, { tif, x, y }) {
   return (
@@ -73,7 +75,7 @@ function reducer (state, action) {
 }
 
 export default function useTags (tif) {
-  const { isConnected, socket } = useSocket()
+  const { isConnected, socket } = useContext(SocketContext)
   const [tags, dispatch] = useReducer(reducer, [])
 
   useEffect(() => {
@@ -89,7 +91,7 @@ export default function useTags (tif) {
       socket
         .off('tags')
     }
-  }, [isConnected, tif])
+  }, [isConnected, socket, tif])
 
   return useMemo(() => {
     return {

@@ -1,7 +1,9 @@
-import React, { createContext, useReducer, useEffect } from 'react'
+import React, { createContext, useContext, useReducer, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import useSocket from '#client/hooks/useSocket'
+import {
+  SocketContext
+} from '#client/components/Socket/SocketProvider'
 
 export const TifsContext = createContext({
   isConnected: false,
@@ -85,19 +87,21 @@ function reducer (state, action) {
 }
 
 export default function TifsProvider ({ children }) {
-  const { isConnected, socket } = useSocket()
+  const { isConnected, socket } = useContext(SocketContext)
   const [tifs, dispatch] = useReducer(reducer, [])
 
   useEffect(() => {
-    socket
-      .on('tifs', (tifs) => {
-        dispatch({ type: 'CHANGE_TIFS', tifs })
-      })
-    return () => {
+    if (socket) {
       socket
-        .off('tifs')
+        .on('tifs', (tifs) => {
+          dispatch({ type: 'CHANGE_TIFS', tifs })
+        })
     }
-  })
+
+    return () => {
+      if (socket) socket.off('tifs')
+    }
+  }, [socket])
 
   return (
     <TifsContext.Provider value={{

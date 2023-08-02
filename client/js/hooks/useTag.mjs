@@ -1,15 +1,17 @@
-import { useEffect } from 'react'
-import useSocket from './useSocket.mjs'
+import { useContext, useEffect } from 'react'
+import {
+  SocketContext
+} from '#client/components/Socket/SocketProvider'
 
 export default function useTag (tag) {
-  const { isConnected, socket } = useSocket()
+  const { isConnected, socket } = useContext(SocketContext)
 
   useEffect(() => {
     if (isConnected) {
       socket
         .emit('tag', tag)
     }
-  }, [isConnected, tag])
+  }, [isConnected, socket, tag])
 
   return tag
 }
