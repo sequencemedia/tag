@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 
 import useTags from '#client/hooks/useTags'
 
-import Type from '#client/components/Controls/Type'
-import SelectedIndex from '#client/components/Controls/SelectedIndex'
+import Controls from '#client/components/Controls/Controls'
 import Reverse from '#client/components/Controls/Reverse'
 import Forward from '#client/components/Controls/Forward'
 
@@ -101,18 +100,13 @@ export default function TifsGroup () {
     if (tifs.length) {
       return (
         <div className='tifs-group'>
-          <div className='controls'>
-            <Type
-              type={type}
-              handleChange={setType}
-            />
-
-            <SelectedIndex
-              tifs={tifs}
-              selectedIndex={selectedIndex}
-              handleChange={setSelectedIndex}
-            />
-          </div>
+          <Controls
+            type={type}
+            tifs={tifs}
+            selectedIndex={selectedIndex}
+            handleTypeChange={setType}
+            handleSelectedIndexChange={setSelectedIndex}
+          />
 
           <Tifs
             type={type}
