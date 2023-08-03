@@ -3,19 +3,20 @@ import PropTypes from 'prop-types'
 
 import useTags from '#client/hooks/useTags'
 
+import Type from '#client/components/Controls/Type'
+import SelectedIndex from '#client/components/Controls/SelectedIndex'
+import Reverse from '#client/components/Controls/Reverse'
+import Forward from '#client/components/Controls/Forward'
+
 import {
   TifsContext
 } from './TifsProvider.jsx'
 
 import Connecting from './Connecting.jsx'
-import Type from './Type.jsx'
-import Reverse from './Reverse.jsx'
 import Tif from './Tif.jsx'
-import Forward from './Forward.jsx'
 
-function Tifs ({ type, tifs, changeTifHasPaint, changeTifIsLoaded, changeTifHasError }) {
+function Tifs ({ type, tifs, selectedIndex, handleChange }) {
   const ref = useRef()
-  const [selectedIndex, setSelectedIndex] = useState(0)
 
   const total = tifs.length
   const index = Math.min(selectedIndex, total)
@@ -38,14 +39,14 @@ function Tifs ({ type, tifs, changeTifHasPaint, changeTifIsLoaded, changeTifHasE
   const handleReverseClick = useCallback(() => {
     const now = Math.max(0, index - 1)
 
-    if (now !== index) setSelectedIndex(now)
-  }, [index, setSelectedIndex])
+    if (now !== index) handleChange(now)
+  }, [index, handleChange])
 
   const handleForwardClick = useCallback(() => {
     const now = Math.min(lastIndex, index + 1)
 
-    if (now !== index) setSelectedIndex(now)
-  }, [index, lastIndex, setSelectedIndex])
+    if (now !== index) handleChange(now)
+  }, [index, lastIndex, handleChange])
 
   return (
     <div className='tifs' onClick={(event) => {
@@ -66,24 +67,9 @@ function Tifs ({ type, tifs, changeTifHasPaint, changeTifIsLoaded, changeTifHasE
           hasError={hasError}
           type={type}
           tags={tags}
-          handleTifPaint={(tif) => {
-            changeTifHasPaint(tif)
-          }}
-          handleTifLoad={(tif) => {
-            changeTifIsLoaded(tif)
-          }}
-          handleTifError={(tif) => {
-            changeTifHasError(tif)
-          }}
-          handleTifClick={({ tif, x, y }) => {
-            createTag(tif, x, y)
-          }}
-          handleChange={(currentTag, text) => {
-            changeTagText(currentTag, text)
-          }}
-          handleTagClick={(currentTag) => {
-            showEditTag(currentTag)
-          }}
+          handleTifClick={createTag}
+          handleChange={changeTagText}
+          handleTagClick={showEditTag}
           ref={ref}
         />
 
@@ -99,33 +85,40 @@ function Tifs ({ type, tifs, changeTifHasPaint, changeTifIsLoaded, changeTifHasE
 Tifs.propTypes = {
   type: PropTypes.string.isRequired,
   tifs: PropTypes.array.isRequired,
-  changeTifHasPaint: PropTypes.func.isRequired,
-  changeTifIsLoaded: PropTypes.func.isRequired,
-  changeTifHasError: PropTypes.func.isRequired
+  selectedIndex: PropTypes.number.isRequired,
+  handleChange: PropTypes.func.isRequired
 }
 
 export default function TifsGroup () {
   const [type, setType] = useState('png')
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const {
     isConnected,
-    tifs,
-    changeTifHasPaint,
-    changeTifIsLoaded,
-    changeTifHasError
+    tifs
   } = useContext(TifsContext)
 
   if (isConnected) {
     if (tifs.length) {
       return (
         <div className='tifs-group'>
-          <Type type={type} handleChange={setType} />
+          <div className='controls'>
+            <Type
+              type={type}
+              handleChange={setType}
+            />
+
+            <SelectedIndex
+              tifs={tifs}
+              selectedIndex={selectedIndex}
+              handleChange={setSelectedIndex}
+            />
+          </div>
 
           <Tifs
             type={type}
             tifs={tifs}
-            changeTifHasPaint={changeTifHasPaint}
-            changeTifIsLoaded={changeTifIsLoaded}
-            changeTifHasError={changeTifHasError}
+            selectedIndex={selectedIndex}
+            handleChange={setSelectedIndex}
           />
         </div>
       )

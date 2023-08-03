@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react'
+import React, { forwardRef, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import {
@@ -7,6 +7,10 @@ import {
 } from '#client/common'
 
 import Tags from '#client/components/Tags/Tags'
+
+import {
+  TifsContext
+} from './TifsProvider.jsx'
 
 const STYLE = {
   position: 'relative'
@@ -26,13 +30,16 @@ const Tif = forwardRef(({
   tags,
   isLoaded,
   hasError,
-  handleTifPaint,
-  handleTifLoad,
-  handleTifError,
   handleTifClick,
   handleTagClick,
   handleChange
 }, ref) => {
+  const {
+    changeTifHasPaint,
+    changeTifIsLoaded,
+    changeTifHasError
+  } = useContext(TifsContext)
+
   const {
     current
   } = ref
@@ -42,7 +49,7 @@ const Tif = forwardRef(({
 
     if (current) {
       resizeObserver = new ResizeObserver(() => {
-        handleTifPaint(tif)
+        changeTifHasPaint(tif)
       })
 
       resizeObserver.observe(current)
@@ -51,17 +58,17 @@ const Tif = forwardRef(({
     return () => {
       if (resizeObserver) resizeObserver.disconnect()
     }
-  }, [current])
+  }, [changeTifHasPaint, current])
 
   return (
     <div className='tif' style={STYLE}>
       <img
         src={`/api/${tif}/${type}`}
         onLoad={() => {
-          handleTifLoad(tif)
+          changeTifIsLoaded(tif)
         }}
         onError={() => {
-          handleTifError(tif)
+          changeTifHasError(tif)
         }}
         onClick={(event) => {
           event.stopPropagation()
@@ -79,7 +86,7 @@ const Tif = forwardRef(({
           const x = getNaturalX(X, img, scrollingElement)
           const y = getNaturalY(Y, img, scrollingElement)
 
-          handleTifClick({ tif, x, y })
+          handleTifClick(tif, x, y)
         }}
         ref={ref}
       />
@@ -106,9 +113,6 @@ Tif.propTypes = {
   ),
   isLoaded: PropTypes.bool.isRequired,
   hasError: PropTypes.bool.isRequired,
-  handleTifPaint: PropTypes.func.isRequired,
-  handleTifLoad: PropTypes.func.isRequired,
-  handleTifError: PropTypes.func.isRequired,
   handleTifClick: PropTypes.func.isRequired,
   handleTagClick: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired
