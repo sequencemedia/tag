@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 
 import useTags from '#client/hooks/useTags'
 
-import Controls from '#client/components/Controls/Controls'
+import Type from '#client/components/Controls/Type'
+import SelectedIndex from '#client/components/Controls/SelectedIndex'
 import Reverse from '#client/components/Controls/Reverse'
 import Forward from '#client/components/Controls/Forward'
 
@@ -53,7 +54,12 @@ function Tifs ({ type, tifs, selectedIndex, handleChange }) {
 
       hideEditTag()
     }}>
-      <h2>{index + 1} of {total}</h2>
+      <SelectedIndex
+        tifs={tifs}
+        selectedIndex={selectedIndex}
+        handleChange={handleChange}
+      />
+
       <div className='tif-container'>
         <Reverse
           disabled={isFirstSelected}
@@ -100,12 +106,9 @@ export default function TifsGroup () {
     if (tifs.length) {
       return (
         <div className='tifs-group'>
-          <Controls
+          <Type
             type={type}
-            tifs={tifs}
-            selectedIndex={selectedIndex}
-            handleTypeChange={setType}
-            handleSelectedIndexChange={setSelectedIndex}
+            handleChange={setType}
           />
 
           <Tifs

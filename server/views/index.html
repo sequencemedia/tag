@@ -3,7 +3,7 @@
   <head>
 		<title>Tag</title>
 		<meta charset="utf-8" />
-		<!-- meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" / -->
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
     <style type="text/css">
 
       * {
@@ -14,7 +14,21 @@
       }
       *:before,
       *:after {
-        box-sizing: inherit
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100vh;
+        max-width: 100vw;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        max-width: 100vw;
+        margin: 0;
+        padding: 1rem;
       }
 
       svg.connecting {
@@ -31,12 +45,15 @@
         margin: 0 7.5rem;
       }
 
-      .controls .type {
-        margin-bottom: .5rem
+      .tifs .selected-index {
+        display: flex;
+        margin: .5rem 0;
+        justify-content: center;
+        align-items: center;
       }
 
-      .controls .selected-index {
-        margin-top: .5rem
+      .tifs .selected-index span {
+        font-weight: bold;
       }
 
       .reverse {
@@ -111,6 +128,7 @@
       }
 
       .tif {
+        position: relative;
         padding: 0 .5rem;
       }
 

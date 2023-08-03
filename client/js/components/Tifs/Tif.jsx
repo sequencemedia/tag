@@ -12,10 +12,6 @@ import {
   TifsContext
 } from './TifsProvider.jsx'
 
-const STYLE = {
-  position: 'relative'
-}
-
 function TifError () {
   return (
     <div className='tif-error'>
@@ -61,7 +57,7 @@ const Tif = forwardRef(({
   }, [changeTifHasPaint, current])
 
   return (
-    <div className='tif' style={STYLE}>
+    <div className='tif'>
       <img
         src={`/api/${tif}/${type}`}
         onLoad={() => {
