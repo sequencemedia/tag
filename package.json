@@ -54,7 +54,7 @@
     "uglify-js": "^3.17.4",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "webpack-merge": "^5.9.0"
+    "webpack-merge": "^5.10.0"
   },
   "imports": {
     "#config/*": "./config/*.mjs",
