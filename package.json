@@ -22,7 +22,7 @@
     "build:dev:css": "cross-env NODE_ENV=development echo DEV CSS",
     "start": "cross-env NODE_ENV=production DEBUG=@sequencemedia/tag* node --no-warnings .",
     "start:dev": "cross-env NODE_ENV=development DEBUG=@sequencemedia/tag* node .",
-    "lint": "eslint . --ext .mjs,.cjs,.mts,.cts,.jsx,.tsx",
+    "lint": "eslint . --ext .mjs,.cjs,.jsx,.mts,.cts,.tsx",
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
