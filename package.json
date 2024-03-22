@@ -30,7 +30,7 @@
     "debug": "^4.3.4",
     "express": "^5.0.0-beta.2",
     "joi": "^17.12.2",
-    "mongoose": "^8.2.2",
+    "mongoose": "^8.2.3",
     "nanoid": "^5.0.6",
     "nconf": "^0.12.1",
     "prop-types": "^15.8.1",
