@@ -15,15 +15,15 @@
   },
   "scripts": {
     "build": "concurrently \"npm run build:js\" \"npm run build:css\"",
-    "build:js": "cross-env NODE_ENV=production webpack --config webpack.prod.mjs --mode production",
     "build:css": "cross-env NODE_ENV=production echo CSS",
     "build:dev": "concurrently \"npm run build:dev:js\" \"npm run build:dev:css\"",
-    "build:dev:js": "cross-env NODE_ENV=development webpack --config webpack.dev.mjs --mode development",
     "build:dev:css": "cross-env NODE_ENV=development echo DEV CSS",
-    "start": "cross-env NODE_ENV=production DEBUG=@sequencemedia/tag* node --no-warnings .",
-    "start:dev": "cross-env NODE_ENV=development DEBUG=@sequencemedia/tag* node .",
+    "build:dev:js": "cross-env NODE_ENV=development webpack --config webpack.dev.mjs --mode development",
+    "build:js": "cross-env NODE_ENV=production webpack --config webpack.prod.mjs --mode production",
     "lint": "eslint . --ext .mjs,.cjs,.jsx,.mts,.cts,.tsx",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "start": "cross-env NODE_ENV=production DEBUG=@sequencemedia/tag* node --no-warnings .",
+    "start:dev": "cross-env NODE_ENV=development DEBUG=@sequencemedia/tag* node ."
   },
   "dependencies": {
     "cross-env": "^7.0.3",
@@ -57,13 +57,13 @@
     "webpack-merge": "^5.10.0"
   },
   "imports": {
-    "#config/*": "./config/*.mjs",
-    "#config": "./config/index.mjs",
     "#client/common": "./client/js/common/index.mjs",
     "#client/components/*": "./client/js/components/*.jsx",
     "#client/hooks/*": "./client/js/hooks/*.mjs",
+    "#config": "./config/index.mjs",
+    "#config/*": "./config/*.mjs",
     "#server/middlewares": "./server/middlewares/index.mjs",
-    "#server/models/*": "./server/models/*.mjs",
-    "#server/model-schemas/*": "./server/model-schemas/*.mjs"
+    "#server/model-schemas/*": "./server/model-schemas/*.mjs",
+    "#server/models/*": "./server/models/*.mjs"
   }
 }
