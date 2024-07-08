@@ -18,6 +18,14 @@ export default function Controls ({
         handleChange={handleTypeChange}
       />
 
+
+
+
+
+
+
+
+
       <SelectedIndex
         tifs={tifs}
         selectedIndex={selectedIndex}
