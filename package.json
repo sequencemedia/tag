@@ -28,14 +28,14 @@
   "dependencies": {
     "cross-env": "^7.0.3",
     "debug": "^4.3.7",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "joi": "^17.13.3",
-    "mongoose": "^8.8.3",
+    "mongoose": "^8.8.4",
     "nanoid": "^5.0.9",
     "nconf": "^0.12.1",
     "prop-types": "^15.8.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
@@ -51,7 +51,7 @@
     "eslint-plugin-react": "^7.37.2",
     "terser-webpack-plugin": "^5.3.10",
     "uglify-js": "^3.19.3",
-    "webpack": "^5.97.0",
+    "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4",
     "webpack-merge": "^6.0.1"
   },
